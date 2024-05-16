@@ -8,7 +8,7 @@ const port = 3000;
 
 app.use(express.json());
 
-const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('Deus', 'uscs1234'));
+const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'uscs1234'));
 
 app.get('/filmes', async (req, res) => {
   const session = driver.session();
