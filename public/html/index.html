@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neo4j App</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1>Neo4j App</h1>
+
+  <h2>Adicionar Filme</h2>
+  <form id="formFilme">
+    <input type="text" id="titulo" placeholder="Título do Filme" required>
+    <input type="number" id="ano" placeholder="Ano de Lançamento" required>
+    <button type="submit">Adicionar Filme</button>
+  </form>
+
+  <h2>Adicionar Ator a Filme</h2>
+  <form id="formAtor">
+    <input type="text" id="nomeAtor" placeholder="Nome do Ator" required>
+    <input type="number" id="idFilme" placeholder="ID do Filme" required>
+    <button type="submit">Adicionar Ator</button>
+  </form>
+
+  <h2>Detalhes do Filme</h2>
+  <form id="formDetalhes">
+    <input type="number" id="idDetalhes" placeholder="ID do Filme" required>
+    <button type="submit">Obter Detalhes</button>
+  </form>
+
+  <h2>Filmes</h2>
+  <ul id="filmesList"></ul>
+
+  <script src="script.js"></script>
+</body>
+</html>
