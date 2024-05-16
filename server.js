@@ -8,10 +8,6 @@ const port = 3000;
 
 app.use(express.json());
 
-app.listen(port, () => {
-  console.log(`Servidor rodando em http://localhost:${port}`);
-});
-
 const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('Deus', 'uscs1234'));
 
 app.get('/filmes', async (req, res) => {
