@@ -19,7 +19,7 @@ const driver = neo4j.driver(
   neo4j.auth.basic('neo4j', 'mw91391398'), // Credenciais de autenticação (substitua 'your_password_here' pela sua senha)
   {
     encrypted: 'ENCRYPTION_OFF', // Desativa a criptografia (para desenvolvimento)
-    maxConnectionLifetime: 60 * 60 * 1000, // Tempo máximo de vida da conexão: 1 hora
+   
     maxConnectionPoolSize: 50, // Número máximo de conexões no pool: 50
     connectionAcquisitionTimeout: 2 * 60 * 1000, // Tempo máximo para adquirir uma conexão: 2 minutos
   }
@@ -27,42 +27,39 @@ const driver = neo4j.driver(
 
 // Rota para testar a conexão com o banco de dados Neo4j
 app.get('/test-connection', async (req, res) => {
-  const session = driver.session();
   try {
+    const session = driver.session();
     const result = await session.run('RETURN 1');
+    await session.close();
     res.send('Conexão com o banco de dados Neo4j estabelecida com sucesso.');
   } catch (error) {
     res.status(500).send('Falha na conexão com o banco de dados Neo4j: ' + error.message);
-  } finally {
-    session.close(); // Fechar a sessão dentro do bloco finally para garantir que ela seja fechada mesmo se ocorrer um erro
   }
 });
 
 // Rota para obter todos os filmes do banco de dados
 app.get('/filmes', async (req, res) => {
-  const session = driver.session();
   try {
+    const session = driver.session();
     const result = await session.run('MATCH (filme:Filme) RETURN filme');
     const filmes = result.records.map(record => record.get('filme').properties);
+    await session.close();
     res.json(filmes);
   } catch (error) {
     res.status(500).send(error.message);
-  } finally {
-    session.close();
   }
 });
 
 // Rota para adicionar um novo filme ao banco de dados
 app.post('/filmes', async (req, res) => {
   const { titulo, ano } = req.body;
-  const session = driver.session();
   try {
+    const session = driver.session();
     await session.run('CREATE (:Filme {titulo: $titulo, ano: $ano})', { titulo, ano });
+    await session.close();
     res.status(201).send('Filme adicionado com sucesso.');
   } catch (error) {
     res.status(500).send(error.message);
-  } finally {
-    session.close();
   }
 });
 
@@ -70,29 +67,29 @@ app.post('/filmes', async (req, res) => {
 app.post('/filmes/:id/atores', async (req, res) => {
   const { id } = req.params;
   const { nome } = req.body;
-  const session = driver.session();
   try {
+    const session = driver.session();
     await session.run(
       'MATCH (filme:Filme) WHERE ID(filme) = $id ' +
       'MERGE (ator:Ator {nome: $nome}) ' +
       'MERGE (ator)-[:ATUOU_EM]->(filme)',
       { id: parseInt(id), nome }
     );
+    await session.close();
     res.status(201).send('Ator adicionado ao filme com sucesso.');
   } catch (error) {
     res.status(500).send(error.message);
-  } finally {
-    session.close();
   }
 });
 
 // Rota para obter detalhes de um filme específico
 app.get('/filmes/:id', async (req, res) => {
   const { id } = req.params;
-  const session = driver.session();
   try {
+    const session = driver.session();
     const result = await session.run('MATCH (filme:Filme) WHERE ID(filme) = $id RETURN filme', { id: parseInt(id) });
     const filme = result.records[0]?.get('filme')?.properties;
+    await session.close();
     if (filme) {
       res.json(filme);
     } else {
@@ -100,8 +97,6 @@ app.get('/filmes/:id', async (req, res) => {
     }
   } catch (error) {
     res.status(500).send(error.message);
-  } finally {
-    session.close();
   }
 });
 
